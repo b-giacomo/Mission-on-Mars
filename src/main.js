@@ -600,7 +600,7 @@ function animate(time) {
                         Rover Recovered. You escaped Mars!
                     </h2>
                     <p style="color: #ffffff; font-size: 1.2rem; margin-top: 20px; text-align: center; max-width: 650px; line-height: 1.5; text-shadow: 0 0 5px #ffffff;">
-                        You successfully gathered all energy cores, powered up the extraction base, and survived the alien swarm. Outstanding job, Commander.
+                        All cores secured. The swarm is defeated. The Artificial Sun blazes to life once more. Outstanding job, Commander.
                     </p>
                     <button id="victory-restart" style="margin-top: 40px; padding: 15px 40px; font-size: 1.5rem; background-color: #00ffd5; color: #000; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 0 15px #00ffd5; text-transform: uppercase; transition: transform 0.2s;">
                         Play Again

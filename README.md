@@ -8,7 +8,7 @@ Held by Prof. Marco Schaerf
 ## Live Demo and Links
 **Play the Game Here:** [Live Demo](https://sapienzainteractivegraphicscourse.github.io/final-project-giacomobernardini/)
 **GitHub Repository:** [GitHub Page](https://github.com/SapienzaInteractiveGraphicsCourse/final-project-giacomobernardini)
-**Project Report:** [report.pdf](https://github.com/SapienzaInteractiveGraphicsCourse/final-project-giacomobernardini/report.pdf)
+**Project Report:** [report.pdf](https://github.com/SapienzaInteractiveGraphicsCourse/final-project-giacomobernardini/blob/main/report.pdf)
 
 *We recommend playing the game in full-screen mode for the best immersive experience.*
 
@@ -104,12 +104,11 @@ final-project-giacomobernardini/
 |   └── style.css       # Custom HUD styling and dynamic cursors
 ├── index.html          # Main entry point and UI layout
 └── README.md           # Project documentation
+```
 
 ---
 
 ## 6. How to Run Locally
-
-Since the game utilizes a modern build tool and loads external 3D assets, it must be run via a local development server to bypass strict browser CORS policies.
 
 1. **Clone the repository:** `git clone https://github.com/SapienzaInteractiveGraphicsCourse/final-project-giacomobernardini.git`
 2. **Navigate to the folder:** `cd final-project-giacomobernardini`
