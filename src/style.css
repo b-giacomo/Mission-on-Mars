@@ -1,0 +1,139 @@
+/* --- Fonts --- 
+   Orbitron: sci-fi/tech headings and titles.
+   Inter: body and UI text.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&display=swap');
+
+/* --- Global Reset & Base Styles --- */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #120603;
+    font-family: 'Inter', sans-serif;
+}
+
+/* --- Utilities --- */
+canvas { display: block; }
+.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+
+/* --- FULLSCREEN MENUS --- */
+
+#start-screen, #gameover-screen {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at center, #3d1710 0%, #120603 100%);
+    display: flex; justify-content: center; align-items: center; z-index: 2000;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.menu-content { text-align: center; max-width: 600px; padding: 40px; }
+.game-title {
+    font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900;
+    color: #ffffff; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px;
+    text-shadow: 0 0 20px rgba(255, 120, 50, 0.6);
+}
+.game-subtitle { font-size: 15px; color: #d8b4a0; line-height: 1.6; margin-bottom: 35px; }
+
+/* Main Call to Action Button */
+
+.play-btn {
+    font-family: 'Orbitron', sans-serif; background: linear-gradient(135deg, #ff7e39, #d64519);
+    border: none; color: white; padding: 16px 50px; font-size: 18px; font-weight: 700;
+    letter-spacing: 2px; border-radius: 50px; cursor: pointer;
+    box-shadow: 0 8px 25px rgba(255, 126, 57, 0.4); transition: all 0.3s ease;
+}
+.play-btn:hover { transform: scale(1.08); background: linear-gradient(135deg, #ff9e64, #f25c27); }
+
+/* --- HEADS-UP DISPLAY (HUD) - Top Left (Mission & Status) --- */
+
+#mission-hud {
+    position: fixed; top: 25px; left: 25px;
+    background: rgba(15, 10, 10, 0.75); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 120, 50, 0.3); padding: 18px 24px;
+    border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: #ffecd2; z-index: 1000; pointer-events: none; max-width: 280px;
+}
+
+.mission-title { font-family: 'Orbitron', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #ff9e64; margin-bottom: 6px; }
+.mission-objective, .mission-health { font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 4px; }
+#collected-count { color: #00ffd5; font-weight: 700; }
+#health-val { color: #ff4444; font-weight: 700; }
+#mission-status { font-size: 12px; color: #d8b4a0; line-height: 1.4; margin-top: 6px; }
+
+/* --- RADAR / TRACKER HUD --- */
+#radar-hud {
+    position: fixed; top: 25px; right: 25px;
+    background: rgba(15, 10, 10, 0.75); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 120, 50, 0.3); padding: 15px;
+    border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: #ffecd2; z-index: 1000; pointer-events: none;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    transition: opacity 0.5s ease; min-width: 120px;
+}
+
+.radar-label {
+    font-family: 'Orbitron', sans-serif; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 1px; color: #ffaa00;
+}
+
+/* Circular radar frame */
+
+.radar-ring {
+    position: relative; width: 60px; height: 60px;
+    border: 2px solid rgba(255, 170, 0, 0.3); border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 170, 0, 0.1) 0%, transparent 70%);
+}
+
+#radar-arrow {
+    position: absolute; top: 50%; left: 50%;
+    font-size: 20px; color: #ffaa00; text-shadow: 0 0 10px #ffaa00;
+    transform: translate(-50%, -50%); transform-origin: center center;
+    transition: transform 0.1s linear;
+}
+
+#radar-distance { font-size: 14px; font-weight: 700; color: #ffffff; }
+
+/* --- CONTROLS HUD --- */
+#light-hud {
+    position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 15px;
+    background: rgba(15, 10, 10, 0.85); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 120, 50, 0.35); padding: 12px 24px;
+    border-radius: 50px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    color: #ffecd2; z-index: 1000; user-select: none; max-width: 95vw; overflow-x: auto;
+}
+.hud-group { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
+.hud-group label { font-weight: 600; color: #ff9e64; }
+#light-hud input[type="color"] { appearance: none; -webkit-appearance: none; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; background: none; }
+#light-hud input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+#light-hud input[type="color"]::-webkit-color-swatch { border: 2px solid #ff9e64; border-radius: 50%; }
+#light-hud input[type="range"] { accent-color: #ff7e39; cursor: pointer; width: 80px; }
+.hud-btn {
+    background: linear-gradient(135deg, #ff7e39, #d64519); border: none; color: white;
+    padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer;
+}
+.hud-btn.off { background: linear-gradient(135deg, #444, #222); color: #888; }
+.hud-divider { width: 1px; height: 22px; background: rgba(255, 255, 255, 0.15); }
+
+/* --- Improving the tool bar --- */
+input[type="range"] {
+    pointer-events: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    pointer-events: auto;
+    cursor: grab; 
+}
+
+input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    cursor: grab;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+    cursor: grabbing; 
+}
+input[type="range"]::-moz-range-thumb:active {
+    cursor: grabbing;
+}
