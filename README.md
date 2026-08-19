@@ -104,3 +104,15 @@ final-project-giacomobernardini/
 |   └── style.css       # Custom HUD styling and dynamic cursors
 ├── index.html          # Main entry point and UI layout
 └── README.md           # Project documentation
+
+---
+
+## 6. How to Run Locally
+
+Since the game utilizes a modern build tool and loads external 3D assets, it must be run via a local development server to bypass strict browser CORS policies.
+
+1. **Clone the repository:** `git clone https://github.com/SapienzaInteractiveGraphicsCourse/final-project-giacomobernardini.git`
+2. **Navigate to the folder:** `cd final-project-giacomobernardini`
+3. **Install dependencies:** `npm install`
+4. **Start the development server:** `npm run dev`
+5. **Play:** Open your browser and navigate to the local address provided in the terminal (usually `http://localhost:5173`).
