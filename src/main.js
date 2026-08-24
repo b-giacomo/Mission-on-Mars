@@ -88,7 +88,7 @@ function shootLaser() {
     laserSound.currentTime = 0; 
     laserSound.play().catch(e => console.log("Laser audio error:", e));
 
-    const material = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 3 });
+    const material = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 6 });
     const startPos = new THREE.Vector3();
     
     firePoint.getWorldPosition(startPos);
