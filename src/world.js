@@ -605,14 +605,14 @@ export function spawnAliens() {
 
     // Set difficulty scaling for the swarm
     let alienCount = 15;
-    let baseSpeed = 0.20;
+    let baseSpeed = 0.16;
 
     if (state.difficulty === 'easy') {
         alienCount = 8;
         baseSpeed = 0.15;
     } else if (state.difficulty === 'hard') {
-        alienCount = 25;
-        baseSpeed = 0.28;
+        alienCount = 20;
+        baseSpeed = 0.18;
     }
 
     // Spawn aliens in a perimeter around the player

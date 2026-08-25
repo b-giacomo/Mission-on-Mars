@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import * as TWEEN from '@tweenjs/tween.js';
 
 import { scene, camera, renderer, controls, ambientLight, sunLight, maxAmbientIntensity, maxSunIntensity } from './setup.js';
 import { state, keys, dom } from './ui.js';
@@ -17,11 +16,13 @@ dom.playBtn.addEventListener('click', () => {
 });
 
 // --- Constants ---
-const moveSpeed = 0.60;  
-const turnSpeed = 0.1; 
+const moveSpeed = 0.55;  
+const turnSpeed = 0.08; 
 const raycaster = new THREE.Raycaster();
 const rayOrigin = new THREE.Vector3();
 const magnetWorldPos = new THREE.Vector3();
+const dyingAliens = [];
+const deathParticles = [];
 
 // --- Combat Phase Constants ---
 let combatPhase = false;
@@ -76,8 +77,8 @@ function shootLaser() {
     if (state.isGameOver || state.missionWon) return;
 
     let cooldown = 1500; // Normal
-    if (state.difficulty === 'easy') cooldown = 1000;    
-    else if (state.difficulty === 'hard') cooldown = 2000; // Hard
+    if (state.difficulty === 'easy') cooldown = 1000;   // Easy  
+    else if (state.difficulty === 'hard') cooldown = 1750; // Hard
 
     const currentTime = performance.now();
     if (currentTime - lastShotTime < cooldown) {
@@ -114,13 +115,20 @@ function shootLaser() {
         if (alienIdx > -1) {
             // Check if the specific mesh we hit is the HEAD
             if (hitMesh.userData.isHead) {
-                // Alien killed
-                scene.remove(aliens[alienIdx].mesh);
-                aliens.splice(alienIdx, 1);
+                // remove from AI array
+                const deadAlienData = aliens.splice(alienIdx, 1)[0];
+                
                 const dSound = deathSound.cloneNode();
                 dSound.volume = 0.8; 
                 dSound.play().catch(e => console.log("error death audio:", e));
                 
+                // dying animation array
+                dyingAliens.push({
+                    mesh: deadAlienData.mesh,
+                    fallSpeed: 0,
+                    targetRotX: deadAlienData.mesh.rotation.x - (Math.PI / 2) 
+                });
+
                 dom.missionStatus.innerHTML = `<span style="color:#ffaa00">DEFEND THE ROVER! ALIENS REMAINING: ${aliens.length}</span>`;
                 
                 if (aliens.length === 0) {
@@ -148,10 +156,39 @@ function shootLaser() {
     setTimeout(() => scene.remove(laserLine), 100);
 }
 
+// --- Death particles ---
+function spawnDeathParticles(pos) {
+    const amount = 12;
+    const geo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+    const mat = new THREE.MeshBasicMaterial({ 
+        color: 0xdddddd,
+        transparent: true, 
+        opacity: 0.9 
+    });
+
+    for (let i = 0; i < amount; i++) {
+        const p = new THREE.Mesh(geo, mat.clone()); 
+        
+        p.position.copy(pos);
+        p.position.x += (Math.random() - 0.5) * 1.5;
+        p.position.y += Math.random() * 1.0;
+        p.position.z += (Math.random() - 0.5) * 1.5;
+        
+        scene.add(p);
+
+        deathParticles.push({
+            mesh: p,
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: 0.1 + Math.random() * 0.1,    
+            vz: (Math.random() - 0.5) * 0.15, 
+            life: 1.0 
+        });
+    }
+}
+
 // main animation loop, called every frame by the browser
 function animate(time) {
     requestAnimationFrame(animate);
-    TWEEN.update(time);
     
     // 1. Cinematics and idle state
 
@@ -347,11 +384,19 @@ function animate(time) {
             // drop battery
             b.isAttached = false; 
             
-            const groundY = getTerrainHeight(b.mesh.position.x, b.mesh.position.z);
+            let groundY = getTerrainHeight(b.mesh.position.x, b.mesh.position.z);
             const dx = b.mesh.position.x - hopperWorldPos.x;
             const dz = b.mesh.position.z - hopperWorldPos.z;
             const horizontalDist = Math.sqrt(dx * dx + dz * dz);
             
+            
+            if (horizontalDist < 8.5) {
+                const platformY = hopperWorldPos.y - 3.3;
+                if (groundY < platformY) {
+                    groundY = platformY;
+                }
+            }
+
             // 1. deposit
             if (horizontalDist < 1.4 && b.mesh.position.y < hopperWorldPos.y + 1.5 && b.mesh.position.y > hopperWorldPos.y - 0.5) {
                 b.isDepositing = true;
@@ -757,12 +802,30 @@ function animate(time) {
             cooldownUI.style.boxShadow = "0 0 10px #00ffd5";
             cooldownUI.style.borderColor = "#00ffd5";
         }
+        // roar
         const now = performance.now();
         if (now - lastRoarTime > 2000) {
-            if (Math.random() < 0.4 && aliens.length > 0) {
-                const rSound = roarSound.cloneNode();
-                rSound.volume = 0.3 + (Math.random() * 0.4); 
-                rSound.play().catch(e => console.log("Roar audio error:", e));
+            if (Math.random() < 0.5 && aliens.length > 0) {
+                
+                // 1-alien.lenght contemporaneous alien sounds
+                let roarsToPlay = Math.floor(Math.random() * aliens.length) + 1;
+                
+                for (let i = 0; i < roarsToPlay; i++) {
+                    // eco
+                    setTimeout(() => {
+                        if (state.isGameOver || state.missionWon) return; // stop audio
+                        
+                        const rSound = roarSound.cloneNode();
+                        
+                        // volume
+                        rSound.volume = 0.15 + (Math.random() * 0.2); 
+                        
+                        // pitch
+                        rSound.playbackRate = 0.8 + (Math.random() * 0.4); 
+                        
+                        rSound.play().catch(e => console.log("Roar audio error:", e));
+                    }, i * 200 + (Math.random() * 150));
+                }
             }
             lastRoarTime = now; 
         }
@@ -777,6 +840,48 @@ function animate(time) {
     updateDust();
     
     updateSandstorm();
+
+    // Animate falling aliens
+    for (let i = dyingAliens.length - 1; i >= 0; i--) {
+        const dA = dyingAliens[i];
+        
+        // Gravity fall
+        dA.fallSpeed += 0.02;
+        dA.mesh.position.y -= dA.fallSpeed;
+        
+        // Rotate backwards
+        if (dA.mesh.rotation.x > dA.targetRotX) {
+            dA.mesh.rotation.x -= 0.15;
+        }
+        
+        // Check ground hit
+        const groundY = getTerrainHeight(dA.mesh.position.x, dA.mesh.position.z);
+        if (dA.mesh.position.y <= groundY + 0.5) {
+            spawnDeathParticles(dA.mesh.position);
+            scene.remove(dA.mesh);
+            dyingAliens.splice(i, 1);
+        }
+    }
+
+    // smoke particles
+    for (let i = deathParticles.length - 1; i >= 0; i--) {
+        const p = deathParticles[i];
+        
+        // Move outwards
+        p.mesh.position.x += p.vx;
+        p.mesh.position.y += p.vy;
+        p.mesh.position.z += p.vz;
+        
+        // Fade out
+        p.life -= 0.03; 
+        
+        if (p.life <= 0) {
+            scene.remove(p.mesh);
+            deathParticles.splice(i, 1);
+        } else {
+            p.mesh.material.opacity = p.life;
+        }
+    }
 
     renderer.render(scene, camera);
 }
