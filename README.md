@@ -24,7 +24,7 @@ Held by Prof. Marco Schaerf
 ## 1. Project Overview
 **Mission on Mars** is an interactive 3D survival and exploration game developed entirely in **WebGL** and **Three.js**. Created as the final project for the Interactive Graphics course, it features a custom-built physics system, procedural animations, and a seamless transition between third-person driving and first-person shooter mechanics.
 
-You are a lone commander stranded on the desolate surface of Mars after a catastrophic base failure. The environment is hostile, and the Artificial Sun requires its energy to restore its power. But you are not alone... the sudden power fluctuations have awakened a voxel-based alien swarm beneath the Martian dust. Survive, restore power to the base, and escape!
+You are a lone commander stranded on the desolate surface of Mars after a catastrophic base failure. The Artificial Sun requires energy cores to reignite. But you are not alone... the sudden power fluctuations have awakened a voxel-based alien swarm beneath the Martian dust. Survive, restore the Artificial Sun, and escape!
 
 ---
 
@@ -74,6 +74,7 @@ All movements are procedurally coded in JavaScript:
 - **The Robotic Arm:** Built using a rigid parent-child hierarchy (Forward Kinematics). Moving the base rotates the entire arm structure smoothly.
 - **Adaptive Suspension:** Raycasters shoot downward from each wheel to read the procedural terrain's height in real-time, adjusting the suspension forks and tilting the rover's chassis (pitch and roll) accordingly.
 - **Alien Locomotion:** The alien enemies are constructed from multiple distinct meshes (thorax, segmented legs, wings, mandibles). Their hovering, wing-flapping, and attacking gaits are driven by continuous mathematical functions linked to the `requestAnimationFrame` loop.
+- **Native Procedural Death:** Alien defeats trigger a backward fall and a voxel-style particle burst.
 
 ### Custom Physics & Artificial Intelligence
 - **Battery Physics:** When dropped, batteries undergo custom gravity and collision checks, allowing them to realistically slide or bounce off the edges of the extraction hopper.
@@ -81,7 +82,7 @@ All movements are procedurally coded in JavaScript:
 
 ### Dynamic Lighting & Materials
 - **PBR Texturing:** The environment and models utilize `MeshStandardMaterial` with customized Roughness and Metalness values to react realistically to the light.
-- **Lighting Progression:** As the player deposits batteries, the global ambient and directional lighting progressively shifts, simulating the base powering up and changing the color of the atmospheric fog.
+- **Lighting Progression:** As the player deposits batteries, the global ambient and directional lighting progressively shifts, simulating the Artificial Sun.
 
 ---
 
